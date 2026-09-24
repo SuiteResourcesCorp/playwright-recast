@@ -2,7 +2,7 @@
   "name": "playwright-recast",
   "version": "0.21.0",
   "type": "module",
-  "description": "Fluent pipeline library for processing Playwright traces into polished demo videos — TTS voiceover, subtitles, speed control, and zoom.",
+  "description": "Fluent pipeline library for processing Playwright traces into polished demo videos \u2014 TTS voiceover, subtitles, speed control, and zoom.",
   "license": "MIT",
   "author": "Patrik Szewczyk <Patrik.Szewczyk@gmail.com>",
   "repository": {
@@ -78,6 +78,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build && cp -R src/voiceover/providers/qwen-sidecar dist/voiceover/providers/",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "typecheck": "tsc --noEmit",

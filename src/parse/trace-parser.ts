@@ -96,7 +96,10 @@ export async function parseTrace(tracePath: string): Promise<ParsedTrace> {
   const frames: ScreencastFrame[] = traceEvents
     .filter((e): e is ScreencastFrameEvent => e.type === 'screencast-frame')
     .map((e) => ({
-      sha1: e.sha1,
+      // Playwright >=1.63 names the frame in `file`, already a full zip entry; older traces
+      // carry `sha1` under `resources/`. Carry the ENTRY NAME either way so one build renders
+      // both, and so a later rename of the field cannot silently yield `undefined` again.
+      sha1: e.file ?? `resources/${e.sha1}`,
       timestamp: toMonotonic(e.timestamp),
       pageId: e.pageId,
       width: e.width,
@@ -160,8 +163,9 @@ export async function parseTrace(tracePath: string): Promise<ParsedTrace> {
 
   // Create frame reader
   const frameReader: FrameReader = {
-    readFrame(sha1: string): Promise<Buffer> {
-      const name = `resources/${sha1}`
+    readFrame(name: string): Promise<Buffer> {
+      // `name` is the full entry, prefixed by the mapper above. Prefixing here as well is what
+      // produced `resources/undefined` against a 1.63 trace.
       return Promise.resolve(zip.readBinary(name))
     },
     dispose() {

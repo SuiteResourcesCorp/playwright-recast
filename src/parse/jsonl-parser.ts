@@ -53,7 +53,10 @@ export interface InputEvent {
 export interface ScreencastFrameEvent {
   type: 'screencast-frame'
   pageId: string
-  sha1: string
+  /** Playwright <1.63: the frame's content hash, stored at `resources/<sha1>`. */
+  sha1?: string
+  /** Playwright >=1.63 (trace v9): the full zip entry, e.g. `screencast/page@...jpeg`. */
+  file?: string
   width: number
   height: number
   timestamp: number
